@@ -1,7 +1,7 @@
 // src/router/index.tsx
 import { Route, Routes } from "react-router-dom";
 
-import HomePage from "@/pages/HomePage";
+import HomePage from "@/pages/home/Index";
 
 const AppRoutes = () => (
   <Routes>
