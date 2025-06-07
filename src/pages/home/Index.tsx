@@ -7,7 +7,7 @@ export default function HomePage() {
     <main className="relative">
       <HeroSection />
 
-      <div className="relative z-10 mt-[500px]">
+      <div className="relative z-10 mt-[560px]">
         <ContentsPage />
       </div>
     </main>
