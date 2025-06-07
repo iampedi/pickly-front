@@ -68,7 +68,7 @@ export default function ContentsPage() {
             "flex items-center bg-white px-6 duration-300",
             isStuck
               ? "mt-0 w-full justify-between"
-              : "-mt-8 max-w-4xl rounded-full shadow px-8",
+              : "-mt-8 max-w-4xl rounded-full px-8 shadow",
           )}
         >
           {isStuck && <Logo />}
@@ -80,7 +80,10 @@ export default function ContentsPage() {
                 const Icon = type.icon;
 
                 return (
-                  <div key={type.value} className="flex items-center gap-2.5 hover:text-rose-600">
+                  <div
+                    key={type.value}
+                    className="flex items-center gap-2.5 hover:text-rose-600"
+                  >
                     <Icon size={20} /> {type.label}
                   </div>
                 );
@@ -95,63 +98,69 @@ export default function ContentsPage() {
         <div className="container mx-auto max-w-4xl px-4">
           <h1 className="mb-6 flex items-center gap-2 px-6 text-2xl font-medium text-rose-600">
             <CrownIcon size={22} />
-            Contents List
+            Latest Contents
           </h1>
 
           <div className="grid gap-4">
-            {Contents.map((content) => {
-              const meta = getContentTypeMeta(content.type);
-              const Icon = meta?.icon;
+            {Contents.slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
+              )
+              .map((content) => {
+                const meta = getContentTypeMeta(content.type);
+                const Icon = meta?.icon;
 
-              return (
-                <div
-                  key={content.id}
-                  className="group space-y-2 rounded-xl border border-white px-6 py-5 duration-300 hover:border-lime-300 hover:bg-lime-50/50"
-                >
-                  <h2 className="flex items-center gap-2.5 text-lg font-medium group-hover:text-lime-600">
-                    {Icon && (
-                      <TooltipWrapper tooltip={meta?.label}>
-                        <Icon size={20} />
-                      </TooltipWrapper>
-                    )}
-                    {content.title}
-                    {content.link && (
-                      <TooltipWrapper tooltip="Open Link">
-                        <a href={content.link} target="_blank">
-                          <ExternalLinkIcon
-                            size={16}
-                            className="text-white group-hover:text-gray-500 hover:text-black"
-                          />
-                        </a>
-                      </TooltipWrapper>
-                    )}
-                  </h2>
+                return (
+                  <div
+                    key={content.id}
+                    className="group space-y-2 rounded-xl border border-white px-6 py-5 duration-300 hover:border-lime-300 hover:bg-lime-50/50"
+                  >
+                    <h2 className="flex items-center gap-2.5 text-lg font-medium group-hover:text-lime-600">
+                      {Icon && (
+                        <TooltipWrapper tooltip={meta?.label}>
+                          <Icon size={20} />
+                        </TooltipWrapper>
+                      )}
+                      {content.title}
+                      {content.link && (
+                        <TooltipWrapper tooltip="Open Link">
+                          <a href={content.link} target="_blank">
+                            <ExternalLinkIcon
+                              size={16}
+                              className="text-white group-hover:text-gray-500 hover:text-black"
+                            />
+                          </a>
+                        </TooltipWrapper>
+                      )}
+                    </h2>
 
-                  {content.tags?.length > 0 && (
-                    <div className="flex items-center gap-2.5 capitalize">
-                      <TagIcon size={16} className="text-gray-600" />
-                      <div className="flex">
-                        {content.tags.map((tag, index) => (
-                          <Fragment key={tag}>
-                            <span className="flex items-center gap-1 text-sm">
-                              {tag}
-                            </span>
+                    {content.tags?.length > 0 && (
+                      <div className="flex items-center gap-2.5 capitalize">
+                        <TagIcon size={16} className="text-gray-600" />
+                        <div className="flex">
+                          {content.tags.map((tag, index) => (
+                            <Fragment key={tag}>
+                              <span className="flex items-center gap-1 text-sm">
+                                {tag}
+                              </span>
 
-                            {index < content.tags.length - 1 && (
-                              <DotIcon size={18} className="text-gray-300" />
-                            )}
-                          </Fragment>
-                        ))}
+                              {index < content.tags.length - 1 && (
+                                <DotIcon size={18} className="text-gray-300" />
+                              )}
+                            </Fragment>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {content.description && (
-                    <p className="text-gray-600">{content.description}</p>
-                  )}
-                </div>
-              );
-            })}
+                    {content.description && (
+                      <p className="text-gray-600">{content.description}</p>
+                    )}
+                  </div>
+                );
+              })}
           </div>
         </div>
       </div>

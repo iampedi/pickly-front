@@ -6,4 +6,6 @@ export type Content = {
   link: string;
   tags: string[];
   description: string;
+  createdAt: string;
+  updatedAt: string;
 };
