@@ -110,7 +110,7 @@ export default function ContentForm() {
 
   return (
     <div className="flex h-full items-center">
-      <div className="container mx-auto my-4 max-w-lg">
+      <div className="container mx-auto max-w-lg md:my-4">
         <Card>
           <CardHeader>
             <CardTitle>Submit Content</CardTitle>
@@ -123,7 +123,7 @@ export default function ContentForm() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="grid grid-cols-2 gap-4"
+                className="grid gap-4 md:grid-cols-2"
               >
                 <FormField
                   control={form.control}
@@ -173,7 +173,7 @@ export default function ContentForm() {
                   control={form.control}
                   name="link"
                   render={({ field }) => (
-                    <FormItem className="col-span-2">
+                    <FormItem className="md:col-span-2">
                       <FormLabel>Link</FormLabel>
                       <FormControl>
                         <Input
@@ -192,7 +192,7 @@ export default function ContentForm() {
                   control={form.control}
                   name="tags"
                   render={({ field }) => (
-                    <FormItem className="col-span-2">
+                    <FormItem className="md:col-span-2">
                       <FormLabel>Tags</FormLabel>
                       <FormControl>
                         <TagsInput
@@ -209,7 +209,7 @@ export default function ContentForm() {
                   control={form.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem className="col-span-2">
+                    <FormItem className="md:col-span-2">
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
@@ -224,7 +224,7 @@ export default function ContentForm() {
                   )}
                 />
 
-                <Button type="submit" className="col-span-2 w-full">
+                <Button type="submit" className="md:col-span-2 w-full">
                   Submit Content
                 </Button>
               </form>

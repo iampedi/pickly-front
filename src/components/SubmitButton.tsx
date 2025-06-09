@@ -1,11 +1,15 @@
 // src/components/SubmitButton.tsx
 import { Link } from "react-router-dom";
-import { Button } from "./theme/button";
+import { Button } from "./theme/Button";
 import { CirclePlusIcon } from "lucide-react";
 
-export const SubmitButton = () => {
+type SubmitButtonProps = {
+  className?: string;
+};
+
+export const SubmitButton = ({ className }: SubmitButtonProps) => {
   return (
-    <Button variant={"outline"} size={"lg"} asChild>
+    <Button className={className} variant={"outline"} size={"lg"} asChild>
       <Link to="/submit">
         <CirclePlusIcon /> Submit
       </Link>

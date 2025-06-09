@@ -3,6 +3,12 @@
 @import "tw-animate-css";
 @plugin 'tailwind-scrollbar';
 
+
+.h-full-mobile {
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
