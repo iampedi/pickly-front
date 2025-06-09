@@ -20,9 +20,13 @@ import {
   CrownIcon,
   DotIcon,
   ExternalLinkIcon,
+  FilePenLineIcon,
   LucideGalleryVerticalEnd,
   TagIcon,
+  Trash2Icon,
 } from "lucide-react";
+import axios from "axios";
+import { toast } from "sonner";
 
 export default function ContentsPage() {
   const ref = useRef<HTMLDivElement>(null);
@@ -90,6 +94,17 @@ export default function ContentsPage() {
     ...contentTypes.filter((type) => usedTypes.has(type.value)),
   ];
 
+  async function handleDelete(id: string) {
+    try {
+      await axios.delete(`${API_URL}/contents/${id}`);
+      setContents(Contents.filter((c) => c.id !== id));
+      toast.success("Content deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting content:", error);
+      toast.error("Failed to delete content. Please try again.");
+    }
+  }
+
   return (
     <div className={cn("_wrapper bg-white")}>
       <div ref={ref} className="h-1" />
@@ -152,7 +167,7 @@ export default function ContentsPage() {
 
       <div className="_content mb-8">
         <div className="container mx-auto max-w-4xl px-4">
-          <h1 className="mb-6 flex items-center gap-2 text-2xl font-medium text-rose-600 md:mt-6 md:px-6">
+          <h1 className="mb-6 flex items-center gap-2 text-2xl font-medium text-lime-600 md:mt-6 md:px-6">
             <CrownIcon size={22} />
             Latest Contents
           </h1>
@@ -180,49 +195,69 @@ export default function ContentsPage() {
                 return (
                   <div
                     key={content.id}
-                    className="group space-y-2 rounded-lg border border-lime-300/70 bg-lime-50/70 p-4 duration-300 md:border-white md:bg-white md:px-6 md:py-5 md:hover:border-lime-300 md:hover:bg-lime-50/50"
+                    className="group flex flex-col justify-between gap-6 rounded-lg border border-lime-300/70 bg-lime-50/70 p-4 duration-300 md:flex-row md:items-center md:border-white md:bg-white md:px-6 md:py-5 md:hover:border-lime-300 md:hover:bg-lime-50/50"
                   >
-                    <h2 className="flex items-center gap-2.5 text-lg font-medium group-hover:text-lime-600">
-                      {Icon && (
-                        <TooltipWrapper tooltip={meta?.label}>
-                          <Icon size={20} />
-                        </TooltipWrapper>
-                      )}
-                      {content.title}
-                      {content.link && (
-                        <TooltipWrapper tooltip="Open Link">
-                          <a href={content.link} target="_blank">
-                            <ExternalLinkIcon
-                              size={16}
-                              className="group-hover:text-gray-500 hover:text-black md:text-white"
-                            />
-                          </a>
-                        </TooltipWrapper>
-                      )}
-                    </h2>
+                    <div className="space-y-2">
+                      <h2 className="flex items-center gap-2.5 text-lg font-medium group-hover:text-rose-600">
+                        {Icon && (
+                          <TooltipWrapper tooltip={meta?.label}>
+                            <Icon size={20} />
+                          </TooltipWrapper>
+                        )}
+                        {content.title}
+                        {content.link && (
+                          <TooltipWrapper tooltip="Open Link">
+                            <a href={content.link} target="_blank">
+                              <ExternalLinkIcon
+                                size={16}
+                                className="group-hover:text-gray-500 hover:text-black md:text-white"
+                              />
+                            </a>
+                          </TooltipWrapper>
+                        )}
+                      </h2>
 
-                    {content.tags?.length > 0 && (
-                      <div className="flex items-center gap-2.5 capitalize">
-                        <TagIcon size={16} className="text-gray-600" />
-                        <div className="flex">
-                          {content.tags.map((tag, index) => (
-                            <Fragment key={tag}>
-                              <span className="flex items-center gap-1 text-sm">
-                                {tag}
-                              </span>
+                      {content.tags?.length > 0 && (
+                        <div className="flex items-center gap-2.5 capitalize">
+                          <TagIcon size={16} className="text-gray-600" />
+                          <div className="flex">
+                            {content.tags.map((tag, index) => (
+                              <Fragment key={tag}>
+                                <span className="flex items-center gap-1 text-sm">
+                                  {tag}
+                                </span>
 
-                              {index < content.tags.length - 1 && (
-                                <DotIcon size={18} className="text-gray-300" />
-                              )}
-                            </Fragment>
-                          ))}
+                                {index < content.tags.length - 1 && (
+                                  <DotIcon
+                                    size={18}
+                                    className="text-gray-300"
+                                  />
+                                )}
+                              </Fragment>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {content.description && (
-                      <p className="text-gray-600">{content.description}</p>
-                    )}
+                      {content.description && (
+                        <p className="text-gray-600">{content.description}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-end gap-2 text-gray-400 drop-shadow-blue-300 md:hidden md:group-hover:flex">
+                      <TooltipWrapper tooltip="Edit Content">
+                        <FilePenLineIcon
+                          className="cursor-pointer text-lime-600 md:hover:text-lime-600"
+                          size={20}
+                        />
+                      </TooltipWrapper>
+                      <TooltipWrapper tooltip="Delete Content">
+                        <Trash2Icon
+                          className="cursor-pointer text-red-600 md:hover:text-red-600"
+                          size={20}
+                          onClick={() => handleDelete(content.id)}
+                        />
+                      </TooltipWrapper>
+                    </div>
                   </div>
                 );
               })}

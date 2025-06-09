@@ -1,6 +1,6 @@
 // src/types/content.ts
 export type Content = {
-  id: number;
+  id: string;
   title: string;
   type: string;
   link: string;
