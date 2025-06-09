@@ -10,7 +10,7 @@ type SubmitButtonProps = {
 export const SubmitButton = ({ className }: SubmitButtonProps) => {
   return (
     <Button className={className} variant={"outline"} size={"lg"} asChild>
-      <Link to="/submit">
+      <Link to="/create">
         <CirclePlusIcon /> Submit
       </Link>
     </Button>

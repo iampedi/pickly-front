@@ -2,14 +2,14 @@
 import { Route, Routes } from "react-router-dom";
 
 import HomePage from "@/pages/home/Index";
-import SubmitPage from "@/pages/submit/Index";
-import { TestPage } from "@/pages/test/Index";
+import CreateContentPage from "@/pages/contents/Create";
+import UpdateContentPage from "@/pages/contents/Update";
 
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<HomePage />} />
-    <Route path="/submit" element={<SubmitPage />} />
-    <Route path="/test" element={<TestPage />} />
+    <Route path="/create" element={<CreateContentPage />} />
+    <Route path="/update/:id" element={<UpdateContentPage />} />
   </Routes>
 );
 

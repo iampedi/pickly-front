@@ -1,15 +1,16 @@
-// src/pages/submit/Form.tsx
+// src/pages/contents/Form.tsx
 "use client";
 import { API_URL } from "@/config/api";
 import { contentTypes } from "@/constants/content-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 // UI Imports
 import { TagsInput } from "@/components/theme/TagsInput";
-import { Button } from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Button } from "@/components/theme/Button";
 
 const CONTENT_TYPES = contentTypes.map((type) => type.value) as [
   string,
@@ -74,12 +76,22 @@ const formSchema = z.object({
     .optional(),
 });
 
-export default function ContentForm() {
+type ContentFormProps = {
+  mode: "create" | "update";
+  initialValues?: Partial<z.infer<typeof formSchema>>;
+  id?: string;
+};
+
+export default function ContentForm({
+  mode,
+  initialValues,
+  id,
+}: ContentFormProps) {
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       title: "",
       type: "",
       description: "",
@@ -88,24 +100,42 @@ export default function ContentForm() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const submissionData = {
-      title: values.title,
-      type: values.type,
-      description: values.description,
-      link: values.link,
-      tags: values.tags,
-    };
+  useEffect(() => {
+    if (initialValues) {
+      form.reset({
+        title: initialValues.title ?? "",
+        type: initialValues.type ?? "",
+        description: initialValues.description ?? "",
+        link: initialValues.link ?? "",
+        tags: initialValues.tags ?? [],
+      });
+    }
+  }, [initialValues, form]);
 
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await axios.post(`${API_URL}/contents`, submissionData);
-      toast.success("Content submitted successfully!");
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      if (mode === "update" && id) {
+        console.log(values);
+
+        await axios.put(`${API_URL}/contents/${id}`, values);
+        toast.success("Content updated successfully!");
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        await axios.post(`${API_URL}/contents`, values);
+        toast.success("Content submitted successfully!");
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
     } catch (error) {
       console.error("Error submitting content:", error);
     }
+  }
+
+  if (mode === "update" && !initialValues) {
+    return null;
   }
 
   return (
@@ -113,10 +143,13 @@ export default function ContentForm() {
       <div className="container mx-auto max-w-lg md:my-4">
         <Card>
           <CardHeader>
-            <CardTitle>Submit Content</CardTitle>
+            <CardTitle className="hidden md:flex">
+              {mode === "create" ? "Submit" : "Update"} Content
+            </CardTitle>
             <CardDescription>
-              Share your content with the community. Fill out the form below to
-              submit your article, video, or other content.
+              {mode === "create"
+                ? "Share your content with the community. Fill out the form below to submit your article, video, or other content."
+                : "You can update your content here."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -148,7 +181,7 @@ export default function ContentForm() {
                       <FormLabel>Content Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl className="w-full">
                           <SelectTrigger>
@@ -224,8 +257,8 @@ export default function ContentForm() {
                   )}
                 />
 
-                <Button type="submit" className="md:col-span-2 w-full">
-                  Submit Content
+                <Button type="submit" className="w-full md:col-span-2">
+                  {mode === "create" ? "Submit" : "Update"} Content
                 </Button>
               </form>
             </Form>

@@ -4,6 +4,7 @@ import { contentTypes } from "@/constants/content-types";
 import { cn } from "@/lib/utils";
 import type { Content } from "@/types/content";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 // UI Imports
 import { Logo } from "@/components/Logo";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -35,6 +36,7 @@ export default function ContentsPage() {
   const [Contents, setContents] = useState<Content[]>([]);
   const [activeType, setActiveType] = useState<string | null>(null);
   const [pendingScroll, setPendingScroll] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -111,7 +113,7 @@ export default function ContentsPage() {
       <div
         className={cn(
           "sticky top-0 z-20 flex items-center justify-between px-4",
-          isStuck ? "border-b" : "",
+          isStuck ? "border-b bg-white" : "",
         )}
       >
         {isStuck && <Logo className="hidden md:flex" />}
@@ -248,6 +250,7 @@ export default function ContentsPage() {
                         <FilePenLineIcon
                           className="cursor-pointer text-lime-600 md:hover:text-lime-600"
                           size={20}
+                          onClick={() => navigate(`/update/${content.id}`)}
                         />
                       </TooltipWrapper>
                       <TooltipWrapper tooltip="Delete Content">
